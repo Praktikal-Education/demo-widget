@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 
-const exampleData = ref();
+const settings = ref();
 
 const token = new URL(window.location).searchParams.get("token");
 
 const submitSettings = () => {
-  fetch("http://localhost:8101/api/widget/settings", {
+  fetch("http://localhost:8101/api/widget/v1/settings", {
     body: JSON.stringify({
       data: {
-        example: exampleData.value,
+        example: settings.value,
       },
       token,
     }),
@@ -22,15 +22,16 @@ const submitSettings = () => {
 
 onMounted(async () => {
   const data = await fetch(
-    `http://localhost:8101/api/widget/settings?${new URLSearchParams({
+    `http://localhost:8101/api/widget/v1/settings?${new URLSearchParams({
       token: token!,
     }).toString()}`
   );
-  exampleData.value = (await data.json()).example;
+  settings.value = (await data.json()).example;
 });
 </script>
 
 <template>
-  <input type="text" v-model="exampleData" />
+  <label>You can edit the settings here:</label>
+  <input type="text" v-model="settings" />
   <button @click="submitSettings">Submit</button>
 </template>
