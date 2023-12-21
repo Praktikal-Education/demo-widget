@@ -3,11 +3,13 @@ import { onMounted, ref } from "vue";
 
 const settings = ref();
 
-const token = new URL(window.location).searchParams.get("token");
+const params = new URL(window.location).searchParams;
+const token = params.get("token");
+const urlBase = params.get("urlBase");
 
 onMounted(async () => {
   const data = await fetch(
-    `http://localhost:8101/api/widget/v1/settings?${new URLSearchParams({
+    `${urlBase}/api/widget/v1/settings?${new URLSearchParams({
       token: token!,
     }).toString()}`
   );
