@@ -29,3 +29,10 @@ Response: `{src: string; height: number; width: number}`
 Url: `${urlBase}/api/widget/v1/settings?token=${token}`
 Method: `GET`
 Response: `any`
+
+### Save result
+
+Url: `${urlBase}/api/widget/v1/answer?token=${token}`
+Method: `POST`
+Body: `{answer: string; points: number}`
+Content-type `application/json`

@@ -9,18 +9,13 @@ const token = params.get("token");
 const urlBase = params.get("urlBase");
 
 const submitSettings = () => {
-  fetch(
-    `${urlBase}/api/widget/v1/settings?${new URLSearchParams({
-      token: token!,
-    }).toString()}`,
-    {
-      body: JSON.stringify({ data: settings.value }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-    }
-  );
+  fetch(`${urlBase}/api/widget/v1/settings?token=${token}}`, {
+    body: JSON.stringify({ data: settings.value }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+  });
 };
 
 const selectImage = (event) => {
@@ -29,19 +24,14 @@ const selectImage = (event) => {
 
 const uploadImage = async () => {
   const uploadedImage: { src: string; width: number; height: number } = await (
-    await fetch(
-      `${urlBase}/api/widget/v1/image/add?${new URLSearchParams({
-        token: token!,
-      }).toString()}`,
-      {
-        body: (() => {
-          const body = new FormData();
-          body.append("file", image.value);
-          return body;
-        })(),
-        method: "POST",
-      }
-    )
+    await fetch(`${urlBase}/api/widget/v1/image/add?token=${token}}`, {
+      body: (() => {
+        const body = new FormData();
+        body.append("file", image.value);
+        return body;
+      })(),
+      method: "POST",
+    })
   ).json();
 
   console.log("Do with url this whatever you’d like to: ", uploadedImage.src);
@@ -50,9 +40,7 @@ const uploadImage = async () => {
 onMounted(async () => {
   const data = await (
     await fetch(
-      `${urlBase}/api/widget/v1/settings?${new URLSearchParams({
-        token: token!,
-      }).toString()}`,
+      `${urlBase}/api/widget/v1/settings?token=${token}).toString()}`,
       { method: "GET" }
     )
   ).json();
