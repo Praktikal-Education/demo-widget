@@ -8,12 +8,16 @@ const token = params.get("token");
 const urlBase = params.get("urlBase");
 
 onMounted(async () => {
-  const data = await fetch(
-    `${urlBase}/api/widget/v1/settings?${new URLSearchParams({
-      token: token!,
-    }).toString()}`
-  );
-  settings.value = (await data.json()).example;
+  const data = await (
+    await fetch(
+      `${urlBase}/api/widget/v1/settings?${new URLSearchParams({
+        token: token!,
+      }).toString()}`,
+      { method: "GET" }
+    )
+  ).json();
+
+  settings.value = data;
 });
 </script>
 
