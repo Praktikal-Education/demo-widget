@@ -10,10 +10,7 @@ const urlBase = params.get("urlBase");
 
 const submitSettings = () => {
   fetch(`${urlBase}/api/widget/v1/settings?token=${token}}`, {
-    body: JSON.stringify({ data: settings.value }),
-    headers: {
-      "Content-Type": "application/json",
-    },
+    body: JSON.stringify(settings.value),
     method: "POST",
   });
 };

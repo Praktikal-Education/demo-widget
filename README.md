@@ -13,7 +13,7 @@ The widget receives the following input through the query params when loaded int
 
 Url: `${urlBase}/api/widget/v1/settings?token=${token}`
 Method: `POST`
-Body: `{data: any}`
+Body: `JSON.stringify(any)`
 Content-type `application/json`
 
 ### Add image
@@ -30,9 +30,24 @@ Url: `${urlBase}/api/widget/v1/settings?token=${token}`
 Method: `GET`
 Response: `any`
 
-### Save result
+### Save answer
 
 Url: `${urlBase}/api/widget/v1/answer?token=${token}`
 Method: `POST`
-Body: `{answer: string; points: number}`
-Content-type `application/json`
+Body: `string`
+
+### Get previous answer
+
+Url: `${urlBase}/api/widget/v1/answer?token=${token}`
+Method: `GET`
+
+### Save state
+
+Url: `${urlBase}/api/widget/v1/state?token=${token}`
+Method: `POST`
+Body: `JSON.stringify(any)`
+
+### Get previous state
+
+Url: `${urlBase}/api/widget/v1/state?token=${token}`
+Method: `GET`
