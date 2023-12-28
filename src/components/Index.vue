@@ -23,6 +23,10 @@ const submitState = async () => {
   });
 };
 
+function postHeight() {
+  window.parent.postMessage({ height: 300, token }, urlBase);
+}
+
 onMounted(async () => {
   const loadedSettings = await (
     await fetch(`${urlBase}/api/widget/v1/settings?token=${token}`, {
@@ -47,7 +51,11 @@ onMounted(async () => {
   ).json();
 
   answer.value = loadedAnswer;
+
+  postHeight(); // Feel free to send it whenever necessary
 });
+
+window.addEventListener("resize", postHeight); // Feel free to send it whenever necessary
 </script>
 
 <template>

@@ -51,3 +51,15 @@ Body: `JSON.stringify(any)`
 
 Url: `${urlBase}/api/widget/v1/state?token=${token}`
 Method: `GET`
+
+## Sizing
+
+We strongly recommend to design and develop the widget, so that it uses the space provided with a `height: 100vh; width: 100vw` layout to avoid any scrollbars.
+As of horizontally, we expect the widget to have a responsive layout. However, if it is inevitable, we can fit the height of the iframe to that of the content:
+
+```
+window.parent.postMessage({ height: 300, token }: { height: number; token: string }, urlBase);
+```
+
+Unless, it doesn’t fit the screen or is in fullscreen view. In those cases we ignore it.
+The `height` must be a number, don’t forget to send along the token and to mention the `urlBase`.
