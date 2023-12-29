@@ -14,14 +14,12 @@ The widget receives the following input through the query params when loaded int
 Url: `${urlBase}/api/widget/v1/settings?token=${token}`
 Method: `POST`
 Body: `JSON.stringify(any)`
-Content-type `application/json`
 
 ### Add image
 
 Url: `${urlBase}/api/widget/v1/image/add?token=${token}`
 Method: `POST`
 Body: `{file: File}`
-Content-type `multipart/form-data`
 Response: `{src: string; height: number; width: number}`
 
 ### Get settings
