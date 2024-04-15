@@ -3,11 +3,12 @@ import { onMounted, ref } from "vue";
 
 const params = new URL(window.location).searchParams;
 const token = params.get("token");
-const urlBase = params.get("urlBase");
+const urlBase = decodeURIComponent(params.get("urlBase"));
 
 const settings = ref();
 const answer = ref();
 const state = ref();
+const overview = ref();
 
 const submitAnswer = async () => {
   await fetch(`${urlBase}/api/widget/v1/answer?token=${token}`, {
@@ -28,6 +29,8 @@ function postHeight() {
 }
 
 onMounted(async () => {
+  console.log(urlBase);
+
   const loadedSettings = await (
     await fetch(`${urlBase}/api/widget/v1/settings?token=${token}`, {
       method: "GET",
@@ -52,6 +55,16 @@ onMounted(async () => {
 
   answer.value = loadedAnswer;
 
+  console.log("usoetus");
+
+  const loadedOverview = await (
+    await fetch(`${urlBase}/api/widget/v1/overview?token=${token}`, {
+      method: "GET",
+    })
+  ).json();
+
+  overview.value = loadedOverview;
+
   postHeight(); // Feel free to send it whenever necessary
 });
 
@@ -69,6 +82,11 @@ window.addEventListener("resize", postHeight); // Feel free to send it whenever 
     <div>This is the current state: {{ state }}</div>
     <input type="text" v-model="state" />
     <button @click="submitState">Save state</button>
+
+    <div v-if="overview">
+      If I am a teacher, I have the right to see all my students here
+      <div>{{ overview }}</div>
+    </div>
   </div>
 </template>
 
