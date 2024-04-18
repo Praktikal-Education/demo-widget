@@ -49,6 +49,19 @@ Body: `JSON.stringify(any)`
 
 Url: `${urlBase}/api/widget/v1/state?token=${token}`
 Method: `GET`
+Response: `string`
+
+### Get all the students’ states
+
+Url: `${urlBase}/api/widget/v1/overview?token=${token}`
+Method: `GET`
+Response: `{        
+  state?: string;
+  isCheckedIn: boolean;
+  answer?: string;
+}[] | false`
+
+Returns an overview, if the user have no right for that, then false.
 
 ## Sizing
 

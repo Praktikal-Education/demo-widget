@@ -31,7 +31,7 @@ const uploadImage = async () => {
     })
   ).json();
 
-  console.log("Do with url this whatever you’d like to: ", uploadedImage.src);
+  console.log("Do with this url whatever you’d like to: ", uploadedImage.src);
 };
 
 onMounted(async () => {
