@@ -6,7 +6,7 @@ const image = ref();
 
 const params = new URL(window.location).searchParams;
 const token = params.get("token");
-const urlBase = params.get("urlBase");
+const urlBase = decodeURIComponent(params.get("urlBase"));
 
 const submitSettings = () => {
   fetch(`${urlBase}/api/widget/v1/settings?token=${token}}`, {

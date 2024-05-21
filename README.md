@@ -59,9 +59,39 @@ Response: `{
   state?: string;
   isCheckedIn: boolean;
   answer?: string;
+  screenName: string;
 }[] | false`
 
 Returns an overview, if the user have no right for that, then false.
+The availability of `screenName` might change in the future,
+depending on our control over the widget.
+
+### Save shared state
+
+Url: `${urlBase}/api/widget/v1/sharedState?token=${token}`
+Method: `POST`
+Body: `JSON.stringify(any)`
+Throws unauthorized exception if not teacher.
+
+### Get shared state
+
+Url: `${urlBase}/api/widget/v1/sharedState?token=${token}`
+Method: `GET`
+Response: `string`
+
+### Get own role
+
+Url: `${urlBase}/api/widget/v1/ownRole?token=${newToken}`
+Method: `GET`
+Response: `'teacher' | 'student' | undefined`
+
+Returns `undefined` if not in a slideshow context,
+meaning that there can be no groups and no roles in this case.
+
+### Websockets
+
+Url: `${urlBase.replace("http", "ws")}/api/socket/widget?token=${newToken}`
+Message data: `{ event: 'OVERVIEW_CHANGED' | 'SHARED_STATE_CHANGED' }`
 
 ## Sizing
 
