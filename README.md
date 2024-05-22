@@ -62,6 +62,7 @@ Response: `{
   screenName: string;
 }[]`
 Throws unauthorized exception if not teacher.
+Throws bad request error if not in a slideshow context.
 
 The availability of `screenName` might change in the future, depending on our control over the widget.
 
@@ -71,6 +72,7 @@ Url: `${urlBase}/api/widget/v1/sharedState?token=${token}`
 Method: `POST`
 Body: `JSON.stringify(any)`
 Throws unauthorized exception if not teacher.
+Throws bad request error if not in a slideshow context.
 
 ### Get shared state
 
@@ -85,7 +87,7 @@ Method: `GET`
 Response: `'teacher' | 'student' | undefined`
 
 Returns `undefined` if not in a slideshow context,
-it makes no sense to speak about roles if there are no groups.
+we can’t speak about roles if there are no groups.
 
 ### Websockets
 
