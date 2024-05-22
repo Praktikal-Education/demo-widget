@@ -8,8 +8,6 @@ const urlBase = decodeURIComponent(params.get("urlBase"));
 const settings = ref();
 const answer = ref();
 const state = ref();
-const sharedState = ref();
-const overview = ref();
 const ownRole = ref();
 
 const submitAnswer = async () => {
@@ -20,45 +18,10 @@ const submitAnswer = async () => {
 };
 
 const submitState = async () => {
-  await fetch(`${urlBase}/api/widget/v1/state?token= s${token}`, {
+  await fetch(`${urlBase}/api/widget/v1/state?token=${token}`, {
     body: JSON.stringify(state.value),
     method: "POST",
   });
-};
-
-const submitSharedState = async () => {
-  await fetch(`${urlBase}/api/widget/v1/sharedState?token=${token}`, {
-    body: JSON.stringify(sharedState.value),
-    method: "POST",
-  });
-};
-
-function postHeight() {
-  window.parent.postMessage({ height: 300, token }, urlBase);
-}
-
-const loadOverview = async (newToken: string) => {
-  overview.value = await (
-    await fetch(`${urlBase}/api/widget/v1/overview?token=${newToken}`, {
-      method: "GET",
-    })
-  ).json();
-};
-
-const loadSharedState = async (newToken: string) => {
-  sharedState.value = await (
-    await fetch(`${urlBase}/api/widget/v1/sharedState?token=${newToken}`, {
-      method: "GET",
-    })
-  ).json();
-};
-
-const getMyRole = async (newToken: string) => {
-  ownRole.value = await (
-    await fetch(`${urlBase}/api/widget/v1/ownRole?token=${newToken}`, {
-      method: "GET",
-    })
-  ).text();
 };
 
 watch(
@@ -66,36 +29,39 @@ watch(
   async (newToken) => {
     // Wait for the token
     if (newToken) {
-      await getMyRole(newToken);
+      // Check role
+      ownRole.value = await (
+        await fetch(`${urlBase}/api/widget/v1/ownRole?token=${newToken}`, {
+          method: "GET",
+        })
+      ).text();
 
-      const loadedSettings = await (
+      // Settings
+      settings.value = await (
         await fetch(`${urlBase}/api/widget/v1/settings?token=${newToken}`, {
           method: "GET",
         })
       ).json();
-      settings.value = loadedSettings;
 
-      const loadedState = await (
+      // State
+      state.value = await (
         await fetch(`${urlBase}/api/widget/v1/state?token=${newToken}`, {
           method: "GET",
         })
       ).json();
-      state.value = loadedState;
 
-      loadSharedState(newToken);
-
-      const loadedAnswer = await (
+      // Previous answer
+      answer.value = await (
         await fetch(`${urlBase}/api/widget/v1/answer?token=${newToken}`, {
           method: "GET",
         })
       ).json();
-      answer.value = loadedAnswer;
-
-      loadOverview(newToken);
     }
   },
   { immediate: true }
 );
+
+// Init socket
 
 let socket: any;
 
@@ -111,11 +77,34 @@ watch(
   { immediate: true }
 );
 
-// If teacher, subscribe to overview changes
+// If teacher, load overview and subscribe to its changes
+
+const overview = ref([]);
+
+const loadOverview = async (newToken: string) => {
+  const response = await (
+    await fetch(`${urlBase}/api/widget/v1/overview?token=${newToken}`, {
+      method: "GET",
+    })
+  ).json();
+
+  if (!response.statusCode) {
+    overview.value = response;
+  }
+};
+
+watch(
+  ownRole,
+  (newOwnRole) => {
+    if (newOwnRole === "teacher") loadOverview(token!);
+  },
+  { immediate: true }
+);
+
 watch(
   [ownRole, () => socket],
-  ([newMyRole, newSocket]) => {
-    if (newMyRole === "teacher" && newSocket) {
+  ([newOwnRole, newSocket]) => {
+    if (newOwnRole === "teacher" && newSocket) {
       newSocket.addEventListener("message", (message: MessageEvent) => {
         if (
           message.data &&
@@ -131,7 +120,26 @@ watch(
   }
 );
 
-// Subscribe to shared state changes
+// Shared state
+
+const sharedState = ref();
+
+const loadSharedState = async (newToken: string) => {
+  sharedState.value = await (
+    await fetch(`${urlBase}/api/widget/v1/sharedState?token=${newToken}`, {
+      method: "GET",
+    })
+  ).json();
+};
+
+watch(
+  () => token,
+  (newToken) => {
+    if (newToken) loadSharedState(newToken);
+  },
+  { immediate: true }
+);
+
 watch(
   () => socket,
   (newSocket) => {
@@ -150,6 +158,19 @@ watch(
     immediate: true,
   }
 );
+
+const submitSharedState = async () => {
+  await fetch(`${urlBase}/api/widget/v1/sharedState?token=${token}`, {
+    body: JSON.stringify(sharedState.value),
+    method: "POST",
+  });
+};
+
+// Resizing
+
+function postHeight() {
+  window.parent.postMessage({ height: 300, token }, urlBase);
+}
 
 window.addEventListener("resize", postHeight); // Feel free to send it whenever necessary
 </script>
@@ -171,7 +192,7 @@ window.addEventListener("resize", postHeight); // Feel free to send it whenever 
     <button @click="submitState">Save state</button>
 
     <!-- Overview -->
-    <div v-if="ownRole === 'teacher' && (overview ?? []).length">
+    <div v-if="overview.length">
       <p>As I am a teacher, I have the right to see all my students here:</p>
       <div v-for="{ state, answer, isCheckedIn, screenName } in overview">
         - {{ screenName }} {{ state }} {{ answer }}

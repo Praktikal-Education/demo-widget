@@ -51,7 +51,7 @@ Url: `${urlBase}/api/widget/v1/state?token=${token}`
 Method: `GET`
 Response: `string`
 
-### Get all the students’ states
+### Get overview of all the students’ states
 
 Url: `${urlBase}/api/widget/v1/overview?token=${token}`
 Method: `GET`
@@ -60,11 +60,10 @@ Response: `{
   isCheckedIn: boolean;
   answer?: string;
   screenName: string;
-}[] | false`
+}[]`
+Throws unauthorized exception if not teacher.
 
-Returns an overview, if the user have no right for that, then false.
-The availability of `screenName` might change in the future,
-depending on our control over the widget.
+The availability of `screenName` might change in the future, depending on our control over the widget.
 
 ### Save shared state
 
@@ -86,7 +85,7 @@ Method: `GET`
 Response: `'teacher' | 'student' | undefined`
 
 Returns `undefined` if not in a slideshow context,
-meaning that there can be no groups and no roles in this case.
+it makes no sense to speak about roles if there are no groups.
 
 ### Websockets
 
